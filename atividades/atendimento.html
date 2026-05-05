@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Atendimento</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #faff99; 
+        }
+
+        .container {
+            width: 400px;
+            margin: 40px auto;
+            background-color: burlywood; 
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"], 
+        input[type="number"], 
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box; 
+        }
+
+        .radio-group {
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .erro {
+            color: white;
+            background-color: #d9534f;
+            margin: 20px auto;
+            padding: 10px;
+            width: 400px;
+            text-align: center;
+            border-radius: 5px;
+            display: none; 
+        }
+
+        .resultado {
+            width: 400px;
+            margin: 20px auto;
+            padding: 15px;
+            border: 2px solid #8b4513;
+            background: white;
+            border-radius: 10px;
+            display: none; 
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Formulário de Atendimento</h2>
+
+    <form id="formAtendimento">
+        <label>Nome:</label>
+        <input type="text" id="nome">
+
+        <label>Idade:</label>
+        <input type="number" id="idade">
+
+        <label>Tipo de Atendimento:</label>
+        <select id="tipo">
+            <option value="Técnico">Técnico</option>
+            <option value="Administrativo">Administrativo</option>
+            <option value="Suporte">Suporte</option>
+        </select>
+
+        <label>Prioridade:</label>
+        <div class="radio-group">
+            <input type="radio" name="prioridade" value="Baixa" id="p-baixa"> <label style="display:inline; font-weight:normal;" for="p-baixa">Baixa</label><br>
+            <input type="radio" name="prioridade" value="Média" id="p-media"> <label style="display:inline; font-weight:normal;" for="p-media">Média</label><br>
+            <input type="radio" name="prioridade" value="Alta" id="p-alta"> <label style="display:inline; font-weight:normal;" for="p-alta">Alta</label>
+        </div>
+
+        <button type="submit">Enviar</button>
+    </form>
+</div>
+
+<div id="mensagem" class="erro"></div>
+<div id="resultado" class="resultado"></div>
+
+<script>
+document.getElementById("formAtendimento").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    let nome = document.getElementById("nome").value.trim();
+    let idadeVal = document.getElementById("idade").value;
+    let idade = parseInt(idadeVal);
+    let tipo = document.getElementById("tipo").value;
+    let prioridade = document.querySelector('input[name="prioridade"]:checked');
+
+    let displayErro = document.getElementById("mensagem");
+    let displayResultado = document.getElementById("resultado");
+
+    displayErro.style.display = "none";
+    displayResultado.style.display = "none";
+    displayErro.innerHTML = "";
+    displayResultado.innerHTML = "";
+
+    if (nome === "") {
+        displayErro.innerHTML = "O nome é obrigatório!";
+        displayErro.style.display = "block";
+        return;
+    }
+
+    if (idadeVal === "" || isNaN(idade)) {
+        displayErro.innerHTML = "Informe uma idade válida!";
+        displayErro.style.display = "block";
+        return;
+    }
+
+    if (!prioridade) {
+        displayErro.innerHTML = "Selecione uma prioridade!";
+        displayErro.style.display = "block";
+        return;
+    }
+
+    let listaMensagens = [];
+
+    if (prioridade.value === "Baixa") {
+        listaMensagens.push("Encaminhar para equipe técnica em breve.");
+    } else if (prioridade.value === "Média") {
+        listaMensagens.push("Encaminhar para equipe técnica com maior prioridade.");
+    } else if (prioridade.value === "Alta") {
+        listaMensagens.push("Atendimento urgente! Encaminhar imediatamente.");
+    }
+
+    displayResultado.style.display = "block";
+    displayResultado.innerHTML = `
+        <h3 style="margin-top:0; color: #4CAF50;">Resumo do Atendimento</h3>
+        <p><strong>Nome:</strong> ${nome}</p>
+        <p><strong>Tipo:</strong> ${tipo}</p>
+        <p><strong>Prioridade:</strong> ${prioridade.value}</p>
+        <p><strong>Status:</strong><br> ${listaMensagens.join("<br> ")}</p>`;
+});
+</script>
+</body>
+</html>
